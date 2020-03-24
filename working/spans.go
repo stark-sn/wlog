@@ -18,15 +18,17 @@ func ComeIn(week types.Week, t time.Time) (types.Week, error) {
 	date := types.Date(t)
 	day, _ := week.Days[date]
 
-	// Check if last span is finished
-	if len(day.Spans) > 0 {
-		span := day.Spans[len(day.Spans) - 1]
-		if span.End.IsZero() {
-			return week, fmt.Errorf("You're already in since %v.", span.Start)
-		}
+	span, wasInOnce := day.CurrentSpan()
+
+	// Current span has not ended yet
+	if wasInOnce && !span.Completed() {
+		return week, fmt.Errorf("You're already in since %v.", span.Start)
 	}
 
-	day.Spans = append(day.Spans, types.Span{Start: t})
+	// Start new work span
+	span = types.Span{}
+	span.Start = t
+	day.Spans = append(day.Spans, span)
 
 	week.Days[date] = day
 
@@ -40,22 +42,16 @@ func GoOut(week types.Week, t time.Time) (types.Week, error) {
 	}
 
 	date := types.Date(t)
-	day, ok := week.Days[date]
+	day, wasInToday := week.Days[date]
 
-	if !ok {
+	if !wasInToday {
 		return week, errors.New("You're not logged in today. Did you work over midnight?")
 	}
 
-	if day.Spans == nil || len(day.Spans) == 0 {
-		return week, errors.New("This should not happen. Did you mess around with the data file?")
-	}
 
-	i := len(day.Spans) - 1
-	if day.Spans[i].Start.IsZero() {
-		return week, errors.New("This can not happen. You did mess around with the data file!")
-	}
+	span, wasInOnce := day.CurrentSpan()
 
-	if !day.Spans[i].End.IsZero() {
+	if !wasInOnce || span.Completed() {
 		return week, errors.New("You're are currently out.")
 	}
 
@@ -68,7 +64,8 @@ func GoOut(week types.Week, t time.Time) (types.Week, error) {
 		}
 	}
 
-	day.Spans[i].End = t;
+	span.End = t;
+	day.Spans[len(day.Spans) - 1] = span
 	week.Days[date] = day
 
 	return week, nil

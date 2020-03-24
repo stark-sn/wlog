@@ -12,3 +12,8 @@ type Span struct {
 	End time.Time
 }
 
+// Is this span completed
+func (s *Span) Completed() bool {
+	return !s.End.IsZero()
+}
+
