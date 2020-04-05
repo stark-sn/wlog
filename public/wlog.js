@@ -1,19 +1,15 @@
+const weekElement = document.getElementById("week");
 const errorElement = document.getElementById("error");
 const dataElement = document.getElementById("data");
 
 const dataDir = "data";
 
-let year = 0;
-let week = 0;
+let year;
+let week;
 
 async function loadFile() {
 
-	let w = week;
-	if (w < 10) {
-		w = `0${w}`;
-	}
-
-	const file = `${dataDir}/${year}/${w}.json`;
+	const file = `${dataDir}/${year}/${week}.json`;
 
 	return await fetch(file).then(r => {
 		if (r.ok) {
@@ -30,9 +26,13 @@ function load() {
 
 function changeWeek(func) {
 	const d = func(moment(`${year} ${week}`, "GGGG WW"));
-	year = parseInt(d.format("GGGG"));
-	week = parseInt(d.format("W"));
+	year = d.format("GGGG");
+	week = d.format("WW");
 	load();
+}
+
+function currWeek() {
+	changeWeek(() => moment());
 }
 
 function prevWeek() {
@@ -52,56 +52,77 @@ function renderData(data) {
 	for (const date of Object.keys(data.Days)) {
 		const day = data.Days[date];
 
-		dataElement.innerText += `${date}\n`;
+		dataElement.innerHTML += `${date}\n`;
 
 		if (day.Activities && day.Activities.length > 0) {
 			let d = 0;
-			dataElement.innerText += "\n";
+			dataElement.innerHTML += "\n";
 			for (const act of day.Activities) {
 				const start = moment(act.Start);
 				const end = moment(act.End);
 				const dur = end.diff(start);
 				d += dur;
-				dataElement.innerText += `\t${act.Title}:\t\t${format(start)} - ${format(end)}\t${format(moment.utc(dur))}\n`;
+				dataElement.innerHTML += `\t${act.Title}:\t\t${format(start)} - ${format(end)}\t${format(moment.utc(dur))}\n`;
 			}
 
 			const dur = moment.utc(moment.duration(d).asMilliseconds());
-			dataElement.innerText += `\n\t\t\t\t\t\t${format(dur)}\n`;
+			dataElement.innerHTML += `\n\t\t\t\t\t\t${format(dur)}\n\n`;
+		}
+
+		let breakTime = 0;
+		if (day.Breaks && day.Breaks.length > 0 ) {
+			dataElement.innerHTML += "\tBreaks:\n";
+			for (const b of day.Breaks) {
+				const start = moment(b.Start);
+				const end = moment(b.End);
+				const dur = end.diff(start);
+
+				breakTime += dur;
+				dataElement.innerHTML += `\t\t${format(start)} - ${format(end)}\t${format(moment.utc(dur))}\n`;
+			}
+		}
+
+
+		const breakDur = moment.utc(moment.duration(breakTime).asMilliseconds());
+
+		if (breakTime > 0) {
+			dataElement.innerHTML += `\n\t\t\t\t\t${format(breakDur)}\n\n`;
 		}
 
 		let d = 0;
-		dataElement.innerText += "\n";
 		for (const span of day.Spans) {
 			const start = moment(span.Start);
 			const end = moment(span.End);
 			const dur = end.diff(start);
 			d += dur;
-			dataElement.innerText += `\t${format(start)} - ${format(end)}\t${format(moment.utc(dur))}\n`;
+			dataElement.innerHTML += `\t${format(start)} - ${format(end)}\t${format(moment.utc(dur))}\n`;
 		}
+		const workTime = d - breakTime;
 		const dur = moment.utc(moment.duration(d).asMilliseconds());
-		dataElement.innerText += `\n\t\t\t\t${format(dur)}\n\n`;
+		const workDur = moment.utc(moment.duration(workTime).asMilliseconds());
+		dataElement.innerHTML += `\n\t\t\t\t${format(dur)}\n`;
+		dataElement.innerHTML += `\t\t\t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-${format(breakDur)} (breaks)\n`;
+		dataElement.innerHTML += `\t\t\t\t${format(workDur)}\n\n`;
 	}
 }
 
 function renderError(e) {
-	errorElement.innerText = e;
+	errorElement.innerHTML = e;
 }
 
 (function() {
 
 	const url = new URL(location.href);
-	year = parseInt(url.searchParams.get("year"));
-	week = parseInt(url.searchParams.get("week"));
+	year = url.searchParams.get("year");
+	week = url.searchParams.get("week");
 
 	if (!(year && week)) {
-		const d = moment();
-		year = parseInt(d.format("GGGG"));
-		week = parseInt(d.format("W"));
-		load(year, week);
+		currWeek();
 		return;
 	}
 
 	loadFile().then(renderData).catch(renderError);
+	weekElement.innerHTML = `${year}-W${week}`;
 
 })();
 
