@@ -5,7 +5,12 @@ import "time"
 // A day dedicated to work.
 type Day struct {
 	Spans []Span
+	Breaks []Span
 	Activities []Activity
+
+	CurSpan *Span
+	CurBreak *Span
+	CurActivity *Activity
 }
 
 // Get date index string
@@ -13,14 +18,15 @@ func Date(t time.Time) string {
 	return t.Format("2006-01-02")
 }
 
-// Get current work span of day.
-// Zero value will be returned when day does not has any spans yet.
-// In that case the returned bool will be false
-func (d *Day) CurrentSpan() (Span, bool) {
-	if len(d.Spans) == 0 {
-		return Span{}, false
-	}
+func (d *Day) IsIn() bool {
+	return d.CurSpan != nil
+}
 
-	return d.Spans[len(d.Spans) - 1], true
+func (d *Day) IsOnBreak() bool {
+	return d.CurBreak != nil
+}
+
+func (d *Day) IsOccupied() bool {
+	return d.CurActivity != nil
 }
 

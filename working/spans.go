@@ -18,17 +18,14 @@ func ComeIn(week types.Week, t time.Time) (types.Week, error) {
 	date := types.Date(t)
 	day, _ := week.Days[date]
 
-	span, wasInOnce := day.CurrentSpan()
-
-	// Current span has not ended yet
-	if wasInOnce && !span.Completed() {
-		return week, fmt.Errorf("You're already in since %v.", span.Start)
+	if day.IsIn() {
+		return week, fmt.Errorf("You're already in since %v.", day.CurSpan.Start)
 	}
 
 	// Start new work span
-	span = types.Span{}
+	span := types.Span{}
 	span.Start = t
-	day.Spans = append(day.Spans, span)
+	day.CurSpan = &span
 
 	week.Days[date] = day
 
@@ -48,24 +45,16 @@ func GoOut(week types.Week, t time.Time) (types.Week, error) {
 		return week, errors.New("You're not logged in today. Did you work over midnight?")
 	}
 
-
-	span, wasInOnce := day.CurrentSpan()
-
-	if !wasInOnce || span.Completed() {
+	if !day.IsIn() {
 		return week, errors.New("You're are currently out.")
 	}
 
-	// End currently running activity
-	if len(day.Activities) > 0 {
-		j := len(day.Activities) - 1
+	// End current span
+	span := day.CurSpan
+	day.CurSpan = nil
+	span.End = t
 
-		if day.Activities[j].End.IsZero() {
-			day.Activities[j].End = t
-		}
-	}
-
-	span.End = t;
-	day.Spans[len(day.Spans) - 1] = span
+	day.Spans = append(day.Spans, *span)
 	week.Days[date] = day
 
 	return week, nil

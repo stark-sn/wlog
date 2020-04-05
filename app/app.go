@@ -57,6 +57,46 @@ func Out() error {
 	return nil
 }
 
+func StartBreak() error {
+	err := readWeekFile()
+	if err != nil {
+		return err
+	}
+
+	week, err = working.StartBreak(week, now)
+
+	if err != nil {
+		return err
+	}
+
+	err = writeWeekFile()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func EndCurrentBreak() error {
+	err := readWeekFile()
+	if err != nil {
+		return err
+	}
+
+	week, err = working.EndCurrentBreak(week, now)
+
+	if err != nil {
+		return err
+	}
+
+	err = writeWeekFile()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func ReportDay() error {
 	err := readWeekFile()
 	if err != nil {

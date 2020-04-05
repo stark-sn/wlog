@@ -26,23 +26,21 @@ func ReportWeek(week types.Week, now time.Time) error {
 
 	for _, date := range dates {
 		day, _ := week.Days[date]
-		dayDur, err := SumWorkingTimeDay(day, now)
-		if err != nil {
-			return err
-		}
 
-		activities, actDur, err := SumActivitiesDay(day, now)
-		if err != nil {
-			return err
-		}
+		dayDur := SumWorkingTimeDay(day, now)
+		breakTime := SumBreakTime(day, now)
+		activities, sumActs  := SumActivitiesDay(day, now)
+
+		dayDur -= breakTime
 
 		fmt.Printf("%v %15v\n", date, dayDur.Truncate(time.Second))
+		fmt.Printf("Break % 20v\n", breakTime.Truncate(time.Second))
 
 		if len(activities) > 0 {
 			fmt.Println(strings.Repeat("┄", 26))
 			ReportActivities(activities)
 			fmt.Println(strings.Repeat("┅", 26))
-			fmt.Printf("%26s\n", actDur.Truncate(time.Second))
+			fmt.Printf("%26s\n", sumActs.Truncate(time.Second))
 			fmt.Println(strings.Repeat("─", 26))
 			fmt.Println()
 		}
