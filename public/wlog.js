@@ -21,7 +21,7 @@ async function loadFile() {
 }
 
 function load() {
-	location.href = `${location.origin}?year=${year}&week=${week}`;
+	location.href = `${location.origin}${location.pathname}?year=${year}&week=${week}`;
 }
 
 function changeWeek(func) {
