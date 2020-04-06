@@ -2,17 +2,15 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"log"
 	"s-stark.net/code/wlog/commands"
 )
 
-func main() {
-	err := commands.Execute()
+func init() {
+	log.SetFlags(0)
+}
 
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+func main() {
+	commands.Execute()
 }
 

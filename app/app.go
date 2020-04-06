@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"log"
 	"time"
 	"os/user"
 	"path"
@@ -16,173 +17,56 @@ const dir = ".wlog"
 var now time.Time = time.Now()
 var weekFile string
 var week types.Week
+var err error
 
-func In() error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
-
-	week, err = working.ComeIn(week, now)
-
-	if err != nil {
-		return err
-	}
-
-	err = writeWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func init() {
+	readWeekFile()
 }
 
-func Out() error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
-
-	week, err = working.GoOut(week, now)
-
-	if err != nil {
-		return err
-	}
-
-	err = writeWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func In() {
+	save(working.ComeIn(week, now))
 }
 
-func StartBreak() error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
-
-	week, err = working.StartBreak(week, now)
-
-	if err != nil {
-		return err
-	}
-
-	err = writeWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func Out() {
+	save(working.GoOut(week, now))
 }
 
-func EndCurrentBreak() error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
-
-	week, err = working.EndCurrentBreak(week, now)
-
-	if err != nil {
-		return err
-	}
-
-	err = writeWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func StartBreak() {
+	save(working.StartBreak(week, now))
 }
 
-func ReportDay() error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return reporting.ReportDay(week, now)
+func EndCurrentBreak() {
+	save(working.EndCurrentBreak(week, now))
 }
 
-func ReportWeek() error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return reporting.ReportWeek(week, now)
+func ReportDay() {
+	reporting.ReportDay(week, now)
 }
 
-func StartActivity(task string) error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
-
-	week, err = working.StartActivity(week, task, now)
-
-	if err != nil {
-		return err
-	}
-
-	err = writeWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func ReportWeek() {
+	reporting.ReportWeek(week, now)
 }
 
-func EndCurrentActivity() error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
-
-	week, err = working.EndCurrentActivity(week, now)
-
-	if err != nil {
-		return err
-	}
-
-	err = writeWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func StartActivity(task string) {
+	save(working.StartActivity(week, task, now))
 }
 
-func LogActivity(task string, duration time.Duration) error {
-	err := readWeekFile()
-	if err != nil {
-		return err
-	}
+func EndCurrentActivity() {
+	save(working.EndCurrentActivity(week, now))
+}
 
-	week, err = working.LogActivity(week, task, now, duration)
-
-	if err != nil {
-		return err
-	}
-
-	err = writeWeekFile()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func LogActivity(task string, duration time.Duration) {
+	save(working.LogActivity(week, task, now, duration))
 }
 
 // helper functions
 
 // Read week data from file
-func readWeekFile() error {
+func readWeekFile() {
 	user, err := user.Current()
 
 	if err != nil {
-		return fmt.Errorf("Failed to get current user, %w", err)
+		log.Fatalf("Failed to get current user, %w", err)
 	}
 
 	y, w := now.ISOWeek()
@@ -191,14 +75,26 @@ func readWeekFile() error {
 	week, err = persistence.Read(weekFile)
 
 	if err != nil {
-		return err
+		log.Fatalf("Failed to read from %v, %w", weekFile, err)
 	}
 
-	return nil
+}
+
+// save changes if no error occoured
+func save(w types.Week, e error) {
+	if e != nil {
+		log.Fatal(e)
+	}
+
+	week = w
+	writeWeekFile()
 }
 
 // Write week data to file
-func writeWeekFile() error {
-	return persistence.Write(weekFile, week)
+func writeWeekFile() {
+	err := persistence.Write(weekFile, week)
+	if err != nil {
+		log.Fatalf("Failed to write to file %v, %w", weekFile, err)
+	}
 }
 

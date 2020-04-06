@@ -2,8 +2,7 @@
 package commands
 
 import (
-	"errors"
-	"fmt"
+	"log"
 	"time"
 	"s-stark.net/code/wlog/app"
 )
@@ -17,22 +16,22 @@ var logCommand = Cmd{
 	Run: logCommandFunc,
 }
 
-func logCommandFunc(args []string) error {
+func logCommandFunc(args []string) {
 	if len(args) != 2 {
-		return errors.New("Usage: log <activity> <duration>")
+		log.Fatal("Usage: log <activity> <duration>")
 	}
 
 	activity := args[0]
 	dur, err := time.ParseDuration(args[1])
 
 	if err != nil {
-		return err
+		log.Fatalf("Failed to parse activity duration, %v, %w", args[1], err)
 	}
 
 	if dur <= 0 {
-		return fmt.Errorf("Can't log activity '%v' with zero/negative duragion '%v'.", activity, dur)
+		log.Fatalf("Can't log activity '%v' with zero/negative duragion '%v'.", activity, dur)
 	}
 
-	return app.LogActivity(activity, dur)
+	app.LogActivity(activity, dur)
 }
 

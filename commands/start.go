@@ -2,7 +2,7 @@
 package commands
 
 import (
-	"errors"
+	"log"
 	"s-stark.net/code/wlog/app"
 )
 
@@ -15,11 +15,11 @@ var startCommand = Cmd{
 	Run: startCommandFunc,
 }
 
-func startCommandFunc(args []string) error {
+func startCommandFunc(args []string) {
 	if len(args) != 1 {
-		return errors.New("Usage: start <activity>")
+		log.Fatal("Usage: start <activity>")
 	}
 
-	return app.StartActivity(args[0])
+	app.StartActivity(args[0])
 }
 

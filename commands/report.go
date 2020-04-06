@@ -2,8 +2,7 @@
 package commands
 
 import (
-	"errors"
-	"fmt"
+	"log"
 	"s-stark.net/code/wlog/app"
 )
 
@@ -16,18 +15,18 @@ var reportCommand = Cmd{
 	Run: reportCommandFunc,
 }
 
-func reportCommandFunc(args []string) error {
+func reportCommandFunc(args []string) {
 	if len(args) != 1 {
-		return errors.New("Supported arguments are 'day' and 'week'")
+		log.Fatal("Supported arguments are 'day' and 'week'")
 	}
 
 	switch reportType := args[0]; reportType {
 		case "day":
-			return app.ReportDay()
+			app.ReportDay()
 		case "week":
-			return app.ReportWeek()
+			app.ReportWeek()
 		default:
-			return fmt.Errorf("Unsupported report type '%v'", reportType)
+			log.Fatalf("Unsupported report type '%v'", reportType)
 	}
 }
 

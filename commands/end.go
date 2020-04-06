@@ -2,7 +2,7 @@
 package commands
 
 import (
-	"errors"
+	"log"
 	"s-stark.net/code/wlog/app"
 )
 
@@ -15,11 +15,11 @@ var endCommand = Cmd{
 	Run: endCommandFunc,
 }
 
-func endCommandFunc(args []string) error {
+func endCommandFunc(args []string) {
 	if len(args) > 0 {
-		return errors.New("End does not support any arguments.")
+		log.Fatal("End does not support any arguments.")
 	}
 
-	return app.EndCurrentActivity()
+	app.EndCurrentActivity()
 }
 

@@ -2,7 +2,6 @@
 package commands
 
 import (
-	"fmt"
 	"log"
 	"os"
 )
@@ -10,7 +9,7 @@ import (
 // Command definition.
 type Cmd struct {
 	Use string
-	Run func(args []string) error
+	Run func(args []string)
 }
 
 var commands map[string]Cmd = make(map[string]Cmd)
@@ -42,7 +41,7 @@ func AddDefaultCommand(command Cmd, args []string) {
 }
 
 // Execute uses os.Args to determine what command should be executed.
-func Execute() error {
+func Execute() {
 
 	var args []string
 	var command Cmd
@@ -51,7 +50,7 @@ func Execute() error {
 
 	if len(os.Args) < 2 {
 		if !gotDefault {
-			return fmt.Errorf("Usage: %s", binName)
+			log.Fatalf("Usage: %s", binName)
 		}
 
 		command = defaultCommand
@@ -63,12 +62,12 @@ func Execute() error {
 		c, exists := commands[cmdName]
 
 		if !exists {
-			return fmt.Errorf("Unknown command '%s'", cmdName)
+			log.Fatalf("Unknown command '%s'", cmdName)
 		}
 
 		command = c
 	}
 
-	return command.Run(args)
+	command.Run(args)
 }
 

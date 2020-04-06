@@ -14,7 +14,7 @@ var inCommand = Cmd{
 	Run: inCommandFunc,
 }
 
-func inCommandFunc(args []string) error {
-	return app.In()
+func inCommandFunc(args []string) {
+	app.In()
 }
 

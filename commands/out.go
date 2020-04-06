@@ -14,7 +14,7 @@ var outCommand = Cmd{
 	Run: outCommandFunc,
 }
 
-func outCommandFunc(args []string) error {
-	return app.Out()
+func outCommandFunc(args []string) {
+	app.Out()
 }
 

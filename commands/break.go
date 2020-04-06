@@ -2,8 +2,7 @@
 package commands
 
 import (
-	"errors"
-	"fmt"
+	"log"
 	"s-stark.net/code/wlog/app"
 )
 
@@ -16,20 +15,18 @@ var breakCommand = Cmd{
 	Run: breakCommandFunc,
 }
 
-func breakCommandFunc(args []string) error {
+func breakCommandFunc(args []string) {
 
 	if len(args) != 1 {
-		return errors.New("Usage: break <start|end>")
+		log.Fatal("Usage: break <start|end>")
 	}
 
 	if args[0] == "start" {
-		return app.StartBreak()
+		app.StartBreak()
 	} else if args[0] == "end" {
-		return app.EndCurrentBreak()
+		app.EndCurrentBreak()
 	} else {
-		return fmt.Errorf("Unknown break command '%v'.", args[0])
+		log.Fatalf("Unknown break command '%v'.", args[0])
 	}
-
-	return nil
 }
 
