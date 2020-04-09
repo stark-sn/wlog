@@ -53,8 +53,23 @@ func GoOut(week types.Week, t time.Time) (types.Week, error) {
 	span := day.CurSpan
 	day.CurSpan = nil
 	span.End = t
-
 	day.Spans = append(day.Spans, *span)
+
+	// End current activity and break if applicable
+	if day.CurBreak != nil {
+		b := day.CurBreak
+		day.CurBreak = nil
+		b.End = t
+		day.Breaks = append(day.Breaks, *b)
+	}
+
+	if day.CurActivity != nil {
+		a := day.CurActivity
+		day.CurActivity = nil
+		a.End = t
+		day.Activities = append(day.Activities, *a)
+	}
+
 	week.Days[date] = day
 
 	return week, nil

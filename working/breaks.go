@@ -21,6 +21,10 @@ func StartBreak(week types.Week, t time.Time) (types.Week, error) {
 		return week, fmt.Errorf("You're already taking a break.")
 	}
 
+	if day.IsOccupied() {
+		return week, fmt.Errorf("You're currently occupied with %s.", day.CurActivity.Title)
+	}
+
 	if !day.IsIn() {
 		return week, errors.New("You're currently not in.")
 	}

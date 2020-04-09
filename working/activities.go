@@ -21,6 +21,10 @@ func StartActivity(week types.Week, activity string, t time.Time) (types.Week, e
 		return week, fmt.Errorf("You're currently occupied with this activity '%v'.", day.CurActivity.Title)
 	}
 
+	if day.IsOnBreak() {
+		return week, fmt.Errorf("You are currently on a break.")
+	}
+
 	if !day.IsIn() {
 		return week, errors.New("You're currently not in.")
 	}
