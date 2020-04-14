@@ -4,50 +4,127 @@ const dataElement = document.getElementById("data");
 
 const dataDir = "data";
 
+// State
+
 let year;
 let week;
 
-async function loadFile() {
+// Helpers
+
+/**
+ * Create title.
+ *
+ * @param {string} year - Year
+ * @param {string} week - Week
+ * @returns {string} Title
+ */
+function title(year, week) {
+	return `${year}-W${week}`;
+}
+
+/**
+ * Format moment date object accorindg to application datetime format.
+ *
+ * @param {*} d - moment date object
+ * @returns {string} Formatted datetime
+ */
+function format(d) {
+	return d.format("HH:mm:ss");
+}
+
+// Data
+
+/**
+ * Load data and trigger rendering.
+ */
+function load() {
 
 	const file = `${dataDir}/${year}/${week}.json`;
+	weekElement.innerHTML = title(year, week);
 
-	return await fetch(file).then(r => {
+	fetch(file).then(r => {
 		if (r.ok) {
 			return r.json();
 		} else {
 			throw new Error(`${r.status} - ${r.statusText} (${file})`);
 		}
-	});
+	}).then(renderData).catch(renderError);
 }
 
-function load() {
-	location.href = `${location.origin}${location.pathname}?year=${year}&week=${week}`;
+// Controls
+
+window.onpopstate = onPopState;
+
+/**
+ * React on history state change.
+ *
+ * @param {PopStateEvent} event - History event
+ */
+function onPopState(event) {
+	year = event.state.year;
+	week = event.state.week;
+	load();
 }
 
+/**
+ * Adjust selected week with provided function.
+ *
+ * @param {function(*): *} func - Control function that adjusts the provided moment object
+ */
 function changeWeek(func) {
 	const d = func(moment(`${year} ${week}`, "GGGG WW"));
 	year = d.format("GGGG");
 	week = d.format("WW");
+
+	history.pushState({
+		year,
+		week
+	},
+	`SST WLOG - ${title(year, week)}`,
+	`?year=${year}&week=${week}`);
+
 	load();
 }
 
+/**
+ * Select current/last week.
+ */
 function currWeek() {
-	changeWeek(() => moment());
+	changeWeek(() => moment().subtract(1, "week"));
 }
 
+/**
+ * Select previous week.
+ */
 function prevWeek() {
 	changeWeek(d => d.subtract(1, "week"));
 }
 
+/**
+ * Select next week.
+ */
 function nextWeek() {
 	changeWeek(d => d.add(1, "week"));
 }
 
-function format(d) {
-	return d.format("HH:mm:ss");
+// Rendering
+
+/**
+ * Reset view.
+ */
+function reset() {
+	dataElement.innerHTML = "";
+	errorElement.innerHTML = "";
 }
 
+/**
+ * Render wlog information.
+ *
+ * @param {*} data - wlog data
+ */
 function renderData(data) {
+
+	reset();
 
 	for (const date of Object.keys(data.Days)) {
 		const day = data.Days[date];
@@ -106,23 +183,31 @@ function renderData(data) {
 	}
 }
 
+/**
+ * Render error information.
+ *
+ * @param {*} e - Error
+ */
 function renderError(e) {
+	reset();
 	errorElement.innerHTML = e;
 }
 
+// Main
+
 (function() {
 
+	// Check if year/week are present in URL and load data.
+	// If missing, load current/last week.
 	const url = new URL(location.href);
 	year = url.searchParams.get("year");
 	week = url.searchParams.get("week");
 
 	if (!(year && week)) {
 		currWeek();
-		return;
+		return
 	}
 
-	loadFile().then(renderData).catch(renderError);
-	weekElement.innerHTML = `${year}-W${week}`;
-
+	load();
 })();
 
