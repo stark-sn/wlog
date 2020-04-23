@@ -4,8 +4,9 @@ package reporting
 import (
 	"errors"
 	"fmt"
+	"os"
 	"sort"
-	"strings"
+	"text/tabwriter"
 	"time"
 	"s-stark.net/code/wlog/types"
 )
@@ -24,32 +25,20 @@ func ReportWeek(week types.Week, now time.Time) error {
 
 	var dur time.Duration
 
+	w := tabwriter.NewWriter(os.Stdout, 5, 0, 2, ' ', 0)
+
 	for _, date := range dates {
 		day, _ := week.Days[date]
-
-		dayDur := SumWorkingTimeDay(day, now)
-		breakTime := SumBreakTime(day, now)
-		activities, sumActs  := SumActivitiesDay(day, now)
-
-		dayDur -= breakTime
-
-		fmt.Printf("%v %15v\n", date, dayDur.Truncate(time.Second))
-		fmt.Printf("Break % 20v\n", breakTime.Truncate(time.Second))
-
-		if len(activities) > 0 {
-			fmt.Println(strings.Repeat("┄", 26))
-			ReportActivities(activities)
-			fmt.Println(strings.Repeat("┅", 26))
-			fmt.Printf("%26s\n", sumActs.Truncate(time.Second))
-			fmt.Println(strings.Repeat("─", 26))
-			fmt.Println()
-		}
-
+		dayDur := reportDayOfWeek(w, date, day, now)
+		fmt.Fprintf(w, "\t\t%s\n", durationPlaceholder)
 		dur += dayDur
 	}
 
-	fmt.Println(strings.Repeat("═", 26))
-	fmt.Printf("Week %21v\n",dur.Truncate(time.Second))
+	fmt.Fprintf(w, "\t\t%s\n", durationPlaceholder)
+	fmt.Fprintf(w, "\t\t= %v\n", fmtDuration(dur))
+
+	w.Flush()
+
 	return nil
 }
 

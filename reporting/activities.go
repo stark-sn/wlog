@@ -4,10 +4,11 @@ package reporting
 import (
 	"fmt"
 	"sort"
+	"io"
 	"time"
 )
 
-func ReportActivities(activities map[string]time.Duration) {
+func reportActivities(w io.Writer, activities map[string]time.Duration) {
 	var titles []string
 	for title, _ := range activities {
 		titles = append(titles, title)
@@ -16,7 +17,7 @@ func ReportActivities(activities map[string]time.Duration) {
 
 	for _, title := range titles {
 		dur, _ := activities[title]
-		fmt.Printf("%-15s %10v\n", title, dur.Truncate(time.Second))
+		fmt.Fprintf(w, "\t%s\t+ %v\n", title, fmtDuration(dur))
 	}
 }
 
