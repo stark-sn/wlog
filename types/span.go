@@ -11,4 +11,3 @@ type Span struct {
 	// to be completed yet.
 	End time.Time
 }
-

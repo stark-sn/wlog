@@ -54,4 +54,3 @@ func Write(file string, week types.Week) error {
 
 	return nil
 }
-

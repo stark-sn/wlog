@@ -31,12 +31,11 @@ func reportCommandFunc(args []string) {
 	}
 
 	switch reportType := args[0]; reportType {
-		case "day":
-			app.ReportDay()
-		case "week":
-			app.ReportWeek()
-		default:
-			log.Fatalf("Unsupported report type '%v'", reportType)
+	case "day":
+		app.ReportDay()
+	case "week":
+		app.ReportWeek()
+	default:
+		log.Fatalf("Unsupported report type '%v'", reportType)
 	}
 }
-

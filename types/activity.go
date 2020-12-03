@@ -5,4 +5,3 @@ type Activity struct {
 	Title string
 	Span
 }
-

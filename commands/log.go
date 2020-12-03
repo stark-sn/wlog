@@ -3,8 +3,8 @@ package commands
 
 import (
 	"log"
-	"time"
 	"s-stark.net/code/wlog/app"
+	"time"
 )
 
 func init() {
@@ -34,4 +34,3 @@ func logCommandFunc(args []string) {
 
 	app.LogActivity(activity, dur)
 }
-

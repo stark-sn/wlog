@@ -3,9 +3,9 @@ package reporting
 
 import (
 	"fmt"
+	"s-stark.net/code/wlog/types"
 	"text/tabwriter"
 	"time"
-	"s-stark.net/code/wlog/types"
 )
 
 // Create work time report for one day.

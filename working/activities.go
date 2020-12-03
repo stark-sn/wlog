@@ -4,8 +4,8 @@ package working
 import (
 	"errors"
 	"fmt"
-	"time"
 	"s-stark.net/code/wlog/types"
+	"time"
 )
 
 // Start new activity.
@@ -95,4 +95,3 @@ func LogActivity(week types.Week, activity string, t time.Time, dur time.Duratio
 
 	return week, nil
 }
-

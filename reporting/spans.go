@@ -4,8 +4,8 @@ package reporting
 import (
 	"fmt"
 	"io"
-	"time"
 	"s-stark.net/code/wlog/types"
+	"time"
 )
 
 func reportSpans(w io.Writer, day types.Day) {
@@ -14,4 +14,3 @@ func reportSpans(w io.Writer, day types.Day) {
 		fmt.Fprintf(w, "\t%s - %s\t+ %v\n", fmtTime(span.Start), fmtTime(span.End), fmtDuration(dur))
 	}
 }
-

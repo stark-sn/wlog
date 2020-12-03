@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"s-stark.net/code/wlog/types"
 	"sort"
 	"text/tabwriter"
 	"time"
-	"s-stark.net/code/wlog/types"
 )
 
 // Create work time report for week.
@@ -41,4 +41,3 @@ func ReportWeek(week types.Week, now time.Time) error {
 
 	return nil
 }
-

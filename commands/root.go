@@ -70,4 +70,3 @@ func Execute() {
 
 	command.Run(args)
 }
-

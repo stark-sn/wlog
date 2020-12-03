@@ -29,4 +29,3 @@ func breakCommandFunc(args []string) {
 		log.Fatalf("Unknown break command '%v'.", args[0])
 	}
 }
-

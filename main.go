@@ -13,4 +13,3 @@ func init() {
 func main() {
 	commands.Execute()
 }
-

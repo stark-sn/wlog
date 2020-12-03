@@ -17,4 +17,3 @@ var outCommand = Cmd{
 func outCommandFunc(args []string) {
 	app.Out()
 }
-

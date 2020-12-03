@@ -4,4 +4,3 @@ package types
 type Week struct {
 	Days map[string]Day
 }
-

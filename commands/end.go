@@ -22,4 +22,3 @@ func endCommandFunc(args []string) {
 
 	app.EndCurrentActivity()
 }
-

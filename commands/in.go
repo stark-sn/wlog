@@ -17,4 +17,3 @@ var inCommand = Cmd{
 func inCommandFunc(args []string) {
 	app.In()
 }
-

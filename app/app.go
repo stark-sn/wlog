@@ -3,13 +3,13 @@ package app
 import (
 	"fmt"
 	"log"
-	"time"
 	"os/user"
 	"path"
-	"s-stark.net/code/wlog/types"
-	"s-stark.net/code/wlog/reporting"
 	"s-stark.net/code/wlog/persistence"
+	"s-stark.net/code/wlog/reporting"
+	"s-stark.net/code/wlog/types"
 	"s-stark.net/code/wlog/working"
+	"time"
 )
 
 const dir = ".wlog"
@@ -101,4 +101,3 @@ func writeWeekFile() {
 		log.Fatalf("Failed to write to file %v, %w", weekFile, err)
 	}
 }
-

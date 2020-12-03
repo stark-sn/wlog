@@ -22,4 +22,3 @@ func startCommandFunc(args []string) {
 
 	app.StartActivity(args[0])
 }
-

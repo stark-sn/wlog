@@ -3,8 +3,8 @@ package reporting
 
 import (
 	"fmt"
-	"time"
 	"s-stark.net/code/wlog/types"
+	"time"
 )
 
 // Display current work status.
@@ -22,7 +22,7 @@ func Status(week types.Week, t time.Time) error {
 		return nil
 	}
 
-	var start time.Time;
+	var start time.Time
 
 	if day.Spans != nil {
 		start = day.Spans[0].Start
@@ -37,7 +37,7 @@ func Status(week types.Week, t time.Time) error {
 	} else if day.IsOccupied() {
 		fmt.Printf("You are currently working on '%s' since %s.\n", day.CurActivity.Title, fmtTime(day.CurActivity.Start))
 	} else if !day.IsIn() {
-		fmt.Printf("You are currently not in, you left at %s.\n", fmtTime(day.Spans[len(day.Spans) - 1].End))
+		fmt.Printf("You are currently not in, you left at %s.\n", fmtTime(day.Spans[len(day.Spans)-1].End))
 	} else {
 		fmt.Println("You are currently slacking off.")
 	}
@@ -52,4 +52,3 @@ func Status(week types.Week, t time.Time) error {
 
 	return nil
 }
-

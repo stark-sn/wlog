@@ -4,8 +4,8 @@ package working
 import (
 	"errors"
 	"fmt"
-	"time"
 	"s-stark.net/code/wlog/types"
+	"time"
 )
 
 // Come in for work.
@@ -74,4 +74,3 @@ func GoOut(week types.Week, t time.Time) (types.Week, error) {
 
 	return week, nil
 }
-

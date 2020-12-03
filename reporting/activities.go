@@ -3,8 +3,8 @@ package reporting
 
 import (
 	"fmt"
-	"sort"
 	"io"
+	"sort"
 	"time"
 )
 
@@ -20,4 +20,3 @@ func reportActivities(w io.Writer, activities map[string]time.Duration) {
 		fmt.Fprintf(w, "\t%s\t+ %v\n", title, fmtDuration(dur))
 	}
 }
-

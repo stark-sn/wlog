@@ -4,12 +4,12 @@ import "time"
 
 // A day dedicated to work.
 type Day struct {
-	Spans []Span
-	Breaks []Span
+	Spans      []Span
+	Breaks     []Span
 	Activities []Activity
 
-	CurSpan *Span
-	CurBreak *Span
+	CurSpan     *Span
+	CurBreak    *Span
 	CurActivity *Activity
 }
 
@@ -29,4 +29,3 @@ func (d *Day) IsOnBreak() bool {
 func (d *Day) IsOccupied() bool {
 	return d.CurActivity != nil
 }
-

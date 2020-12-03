@@ -3,10 +3,10 @@ package reporting
 
 import (
 	"errors"
-	"text/tabwriter"
 	"os"
-	"time"
 	"s-stark.net/code/wlog/types"
+	"text/tabwriter"
+	"time"
 )
 
 // Create work time report for one day.
