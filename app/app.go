@@ -43,6 +43,10 @@ func Status() {
 	reporting.Status(week, now)
 }
 
+func Timesheet() {
+	reporting.Timesheet(week, now)
+}
+
 func ReportDay() {
 	reporting.ReportDay(week, now)
 }

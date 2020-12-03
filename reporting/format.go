@@ -24,3 +24,7 @@ func fmtDuration(d time.Duration) string {
 func fmtTime(t time.Time) string {
 	return t.Format("15:04:05")
 }
+
+func tsFormat(d time.Duration) string {
+	return fmt.Sprintf("%05.2f", d.Hours())
+}
