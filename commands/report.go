@@ -7,12 +7,22 @@ import (
 )
 
 func init() {
-	AddDefaultCommand(reportCommand, []string{"day"})
+	AddDefaultCommand(statusCommand, []string{})
+	AddCommand(reportCommand)
+}
+
+var statusCommand = Cmd{
+	Use: "status",
+	Run: statusCommandFunc,
 }
 
 var reportCommand = Cmd{
 	Use: "report",
 	Run: reportCommandFunc,
+}
+
+func statusCommandFunc(args []string) {
+	app.Status()
 }
 
 func reportCommandFunc(args []string) {
