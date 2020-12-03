@@ -38,7 +38,7 @@ func Timesheet(week types.Week, t time.Time) error {
 		dayTime := spanTime - breakTime
 
 		dayActs := make(map[string]act)
-		for _, activity := range day.Activities {
+		for _, activity := range day.GetActivities(t) {
 			dur := activity.End.Sub(activity.Start)
 			sumActs(acts, activity.Title, dur)
 			sumActs(dayActs, activity.Title, dur)

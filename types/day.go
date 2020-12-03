@@ -29,3 +29,39 @@ func (d *Day) IsOnBreak() bool {
 func (d *Day) IsOccupied() bool {
 	return d.CurActivity != nil
 }
+
+func (d *Day) GetSpans(t time.Time) []Span {
+	spans := d.Spans
+
+	if d.IsIn() {
+		currentSpan := *d.CurSpan
+		currentSpan.End = t
+		spans = append(spans, currentSpan)
+	}
+
+	return spans
+}
+
+func (d *Day) GetBreaks(t time.Time) []Span {
+	breaks := d.Breaks
+
+	if d.IsOnBreak() {
+		currentBreak := *d.CurBreak
+		currentBreak.End = t
+		breaks = append(breaks, currentBreak)
+	}
+
+	return breaks
+}
+
+func (d *Day) GetActivities(t time.Time) []Activity {
+	activities := d.Activities
+
+	if d.IsOccupied() {
+		currentActivity := *d.CurActivity
+		currentActivity.End = t
+		activities = append(activities, currentActivity)
+	}
+
+	return activities
+}
