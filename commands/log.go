@@ -25,7 +25,7 @@ func logCommandFunc(args []string) {
 	dur, err := time.ParseDuration(args[1])
 
 	if err != nil {
-		log.Fatalf("Failed to parse activity duration, %v, %w", args[1], err)
+		log.Fatalf("Failed to parse activity duration, %v, %v", args[1], err)
 	}
 
 	if dur <= 0 {

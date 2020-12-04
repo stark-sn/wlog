@@ -74,7 +74,7 @@ func readWeekFile() {
 	user, err := user.Current()
 
 	if err != nil {
-		log.Fatalf("Failed to get current user, %w", err)
+		log.Fatalf("Failed to get current user, %v", err)
 	}
 
 	y, w := now.ISOWeek()
@@ -83,7 +83,7 @@ func readWeekFile() {
 	week, err = persistence.Read(weekFile)
 
 	if err != nil {
-		log.Fatalf("Failed to read from %v, %w", weekFile, err)
+		log.Fatalf("Failed to read from %v, %v", weekFile, err)
 	}
 
 }
@@ -102,6 +102,6 @@ func save(w types.Week, e error) {
 func writeWeekFile() {
 	err := persistence.Write(weekFile, week)
 	if err != nil {
-		log.Fatalf("Failed to write to file %v, %w", weekFile, err)
+		log.Fatalf("Failed to write to file %v, %v", weekFile, err)
 	}
 }
