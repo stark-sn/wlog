@@ -17,6 +17,6 @@ func reportActivities(w io.Writer, activities map[string]time.Duration) {
 
 	for _, title := range titles {
 		dur, _ := activities[title]
-		fmt.Fprintf(w, "\t%s\t+ %v\n", title, fmtDuration(dur))
+		fmt.Fprintf(w, "\t%s\t+ %s\n", title, fmtDuration(dur))
 	}
 }

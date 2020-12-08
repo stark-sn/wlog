@@ -44,22 +44,18 @@ func Timesheet(week types.Week, t time.Time) error {
 			sumActs(dayActs, activity.Title, dur)
 		}
 
-		fmt.Fprintf(w, "%s\t%sh\n", date, f(dayTime))
+		fmt.Fprintf(w, "%s\t%s\n", date, fmtDuration(dayTime))
 		printActs(w, dayActs, "")
 
 		weekTime += dayTime
 		fmt.Fprintln(w, "\t")
 	}
 
-	fmt.Fprintf(w, "Week\t%sh\n", f(weekTime))
+	fmt.Fprintf(w, "Week\t%s\n", fmtDuration(weekTime))
 	printActs(w, acts, "")
 	w.Flush()
 
 	return nil
-}
-
-func f(d time.Duration) string {
-	return tsFormat(d.Round(15 * time.Minute))
 }
 
 func sumActs(acts map[string]act, title string, dur time.Duration) {
@@ -102,7 +98,7 @@ func printActs(w io.Writer, acts map[string]act, padding string) {
 			childPadding += "│  "
 		}
 
-		fmt.Fprintf(w, "%s %s\t%sh\n", myPadding, title, f(act.dur))
+		fmt.Fprintf(w, "%s %s\t%s\n", myPadding, title, fmtDuration(act.dur))
 
 		printActs(w, act.sub, childPadding)
 	}

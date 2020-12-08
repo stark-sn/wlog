@@ -16,19 +16,19 @@ func reportDayOfWeek(w *tabwriter.Writer, date string, day types.Day, now time.T
 
 	slackTime := dur - breakTime - sumActs
 
-	fmt.Fprintf(w, "%v\t\t%s\n", date, durationPlaceholder)
-	fmt.Fprintf(w, "\t\t%s\n", durationPlaceholder)
+	fmt.Fprintf(w, "%s\t\t\n", date)
+	fmt.Fprintf(w, "\t\t\n")
 	reportSpans(w, day, now)
-	fmt.Fprintf(w, "\t\t= %v\n", fmtDuration(dur))
-	fmt.Fprintf(w, "\tBreak\t- %v\n", fmtDuration(breakTime))
+	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
+	fmt.Fprintf(w, "\tBreak\t- %s\n", fmtDuration(breakTime))
 	dur -= breakTime
-	fmt.Fprintf(w, "\t\t= %v\n", fmtDuration(dur))
-	fmt.Fprintf(w, "\t\t%s\n", durationPlaceholder)
-	fmt.Fprintf(w, "\tActivities\t%s\n", durationPlaceholder)
+	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
+	fmt.Fprintf(w, "\t\t\n")
+	fmt.Fprintf(w, "\tActivities\t\n")
 	reportActivities(w, activities)
-	fmt.Fprintf(w, "\t\t= %v\n", fmtDuration(sumActs))
-	fmt.Fprintf(w, "\tSlack\t+ %v\n", fmtDuration(slackTime))
-	fmt.Fprintf(w, "\t\t= %v\n", fmtDuration(dur))
+	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(sumActs))
+	fmt.Fprintf(w, "\tSlack\t+ %s\n", fmtDuration(slackTime))
+	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
 
 	return dur
 }

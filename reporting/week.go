@@ -30,12 +30,12 @@ func ReportWeek(week types.Week, now time.Time) error {
 	for _, date := range dates {
 		day, _ := week.Days[date]
 		dayDur := reportDayOfWeek(w, date, day, now)
-		fmt.Fprintf(w, "\t\t%s\n", durationPlaceholder)
+		fmt.Fprintf(w, "\t\t\n")
 		dur += dayDur
 	}
 
-	fmt.Fprintf(w, "\t\t%s\n", durationPlaceholder)
-	fmt.Fprintf(w, "\t\t= %v\n", fmtDuration(dur))
+	fmt.Fprintf(w, "\t\t\n")
+	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
 
 	w.Flush()
 
