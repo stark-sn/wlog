@@ -48,7 +48,7 @@ func Timesheet(week types.Week, t time.Time) error {
 		}
 
 		actWeek += actDay
-		dayActs["Untracked"] = act{dur: dayTime - actDay}
+		dayActs[untracked] = act{dur: dayTime - actDay}
 
 		fmt.Fprintf(w, "%s\t%s\n", date, fmtDuration(dayTime))
 		printActs(w, dayActs, nil, "")
@@ -57,7 +57,7 @@ func Timesheet(week types.Week, t time.Time) error {
 		fmt.Fprintln(w, "\t")
 	}
 
-	acts["Untracked"] = act{dur: weekTime - actWeek}
+	acts[untracked] = act{dur: weekTime - actWeek}
 
 	fmt.Fprintf(w, "Week\t%s\n", fmtDuration(weekTime))
 	printActs(w, acts, nil, "")
@@ -101,7 +101,7 @@ func printActs(w io.Writer, acts map[string]act, parent *act, padding string) {
 		fmt.Fprintf(w, "%s %s\t%s\n", elementPadding, title, fmtDuration(act.dur))
 
 		if act.isTask && len(act.sub) > 0 {
-			fmt.Fprintf(w, "%s╟─ ...\t%s\n", childPadding, fmtDuration(act.taskDur))
+			fmt.Fprintf(w, "%s╟─ [...]\t%s\n", childPadding, fmtDuration(act.taskDur))
 		}
 
 		printActs(w, act.sub, &act, childPadding)

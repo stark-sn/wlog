@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+const untracked = "[Untracked]"
+
 // Create work time report for one day.
 func reportDayOfWeek(w *tabwriter.Writer, date string, day types.Day, now time.Time) time.Duration {
 	dur := sumWorkingTimeDay(day, now)
@@ -27,7 +29,7 @@ func reportDayOfWeek(w *tabwriter.Writer, date string, day types.Day, now time.T
 	fmt.Fprintf(w, "\tActivities\t\n")
 	reportActivities(w, activities)
 	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(sumActs))
-	fmt.Fprintf(w, "\tUntracked\t+ %s\n", fmtDuration(untrackedTime))
+	fmt.Fprintf(w, "\t%s\t+ %s\n", untracked, fmtDuration(untrackedTime))
 	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
 
 	return dur
