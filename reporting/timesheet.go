@@ -26,6 +26,7 @@ func Timesheet(week types.Week, t time.Time) error {
 	sort.Strings(dates)
 
 	var weekTime time.Duration
+	var actWeek time.Duration
 	acts := make(map[string]act)
 
 	w := tabwriter.NewWriter(os.Stdout, 5, 0, 2, ' ', 0)
@@ -36,13 +37,18 @@ func Timesheet(week types.Week, t time.Time) error {
 		breakTime := sumBreakTime(day, t)
 
 		dayTime := spanTime - breakTime
+		var actDay time.Duration
 
 		dayActs := make(map[string]act)
 		for _, activity := range day.GetActivities(t) {
 			dur := activity.End.Sub(activity.Start)
+			actDay += dur
 			sumActs(acts, activity.Title, dur)
 			sumActs(dayActs, activity.Title, dur)
 		}
+
+		actWeek += actDay
+		dayActs["Untracked"] = act{dur: dayTime - actDay}
 
 		fmt.Fprintf(w, "%s\t%s\n", date, fmtDuration(dayTime))
 		printActs(w, dayActs, "")
@@ -50,6 +56,8 @@ func Timesheet(week types.Week, t time.Time) error {
 		weekTime += dayTime
 		fmt.Fprintln(w, "\t")
 	}
+
+	acts["Untracked"] = act{dur: weekTime - actWeek}
 
 	fmt.Fprintf(w, "Week\t%s\n", fmtDuration(weekTime))
 	printActs(w, acts, "")
@@ -105,7 +113,6 @@ func printActs(w io.Writer, acts map[string]act, padding string) {
 }
 
 type act struct {
-	title string
-	dur   time.Duration
-	sub   map[string]act
+	dur time.Duration
+	sub map[string]act
 }
