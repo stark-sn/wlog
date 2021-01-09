@@ -14,7 +14,7 @@ func reportDayOfWeek(w *tabwriter.Writer, date string, day types.Day, now time.T
 	breakTime := sumBreakTime(day, now)
 	activities, sumActs := sumActivitiesDay(day, now)
 
-	slackTime := dur - breakTime - sumActs
+	untrackedTime := dur - breakTime - sumActs
 
 	fmt.Fprintf(w, "%s\t\t\n", date)
 	fmt.Fprintf(w, "\t\t\n")
@@ -27,7 +27,7 @@ func reportDayOfWeek(w *tabwriter.Writer, date string, day types.Day, now time.T
 	fmt.Fprintf(w, "\tActivities\t\n")
 	reportActivities(w, activities)
 	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(sumActs))
-	fmt.Fprintf(w, "\tSlack\t+ %s\n", fmtDuration(slackTime))
+	fmt.Fprintf(w, "\tUntracked\t+ %s\n", fmtDuration(untrackedTime))
 	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
 
 	return dur

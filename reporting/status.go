@@ -39,7 +39,7 @@ func Status(week types.Week, t time.Time) error {
 	} else if !day.IsIn() {
 		fmt.Printf("You are currently not in, you left at %s.\n", fmtTime(day.Spans[len(day.Spans)-1].End))
 	} else {
-		fmt.Println("You are currently slacking off.")
+		fmt.Println("You are currently not working on any task.")
 	}
 
 	spanTime := sumWorkingTimeDay(day, t)
