@@ -18,19 +18,19 @@ func Date(t time.Time) string {
 	return t.Format("2006-01-02")
 }
 
-func (d *Day) IsIn() bool {
+func (d Day) IsIn() bool {
 	return d.CurSpan != nil
 }
 
-func (d *Day) IsOnBreak() bool {
+func (d Day) IsOnBreak() bool {
 	return d.CurBreak != nil
 }
 
-func (d *Day) IsOccupied() bool {
+func (d Day) IsOccupied() bool {
 	return d.CurActivity != nil
 }
 
-func (d *Day) GetSpans(t time.Time) []Span {
+func (d Day) GetSpans(t time.Time) []Span {
 	spans := d.Spans
 
 	if d.IsIn() {
@@ -42,7 +42,7 @@ func (d *Day) GetSpans(t time.Time) []Span {
 	return spans
 }
 
-func (d *Day) GetBreaks(t time.Time) []Span {
+func (d Day) GetBreaks(t time.Time) []Span {
 	breaks := d.Breaks
 
 	if d.IsOnBreak() {
@@ -54,7 +54,7 @@ func (d *Day) GetBreaks(t time.Time) []Span {
 	return breaks
 }
 
-func (d *Day) GetActivities(t time.Time) []Activity {
+func (d Day) GetActivities(t time.Time) []Activity {
 	activities := d.Activities
 
 	if d.IsOccupied() {

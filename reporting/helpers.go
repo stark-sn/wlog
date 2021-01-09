@@ -3,15 +3,19 @@ package reporting
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"s-stark.net/code/wlog/types"
 	"text/tabwriter"
 	"time"
 )
 
+var writer = tabwriter.NewWriter(os.Stdout, 5, 0, 2, ' ', 0)
+
 const untracked = "[Untracked]"
 
 // Create work time report for one day.
-func reportDayOfWeek(w *tabwriter.Writer, date string, day types.Day, now time.Time) time.Duration {
+func reportDayOfWeek(w io.Writer, date string, day types.Day, now time.Time) time.Duration {
 	dur := sumWorkingTimeDay(day, now)
 	breakTime := sumBreakTime(day, now)
 	activities, sumActs := sumActivitiesDay(day, now)

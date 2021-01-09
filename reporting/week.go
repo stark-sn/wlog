@@ -4,10 +4,8 @@ package reporting
 import (
 	"errors"
 	"fmt"
-	"os"
 	"s-stark.net/code/wlog/types"
 	"sort"
-	"text/tabwriter"
 	"time"
 )
 
@@ -25,7 +23,7 @@ func ReportWeek(week types.Week, now time.Time) error {
 
 	var dur time.Duration
 
-	w := tabwriter.NewWriter(os.Stdout, 5, 0, 2, ' ', 0)
+	w := writer
 
 	for _, date := range dates {
 		day, _ := week.Days[date]

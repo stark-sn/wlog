@@ -3,9 +3,7 @@ package reporting
 
 import (
 	"errors"
-	"os"
 	"s-stark.net/code/wlog/types"
-	"text/tabwriter"
 	"time"
 )
 
@@ -22,7 +20,7 @@ func ReportDay(week types.Week, now time.Time) error {
 		return errors.New("You're not in today?")
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 5, 0, 2, ' ', 0)
+	w := writer
 
 	reportDayOfWeek(w, date, day, now)
 
