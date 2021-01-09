@@ -11,3 +11,7 @@ type Span struct {
 	// to be completed yet.
 	End time.Time
 }
+
+func (s Span) Duration() time.Duration {
+	return s.End.Sub(s.Start).Round(time.Second)
+}

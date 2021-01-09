@@ -51,7 +51,7 @@ func sumActivitiesDay(day types.Day, now time.Time) (map[string]time.Duration, t
 	var durs = make(map[string]time.Duration)
 
 	for _, act := range day.GetActivities(now) {
-		d := act.End.Sub(act.Start)
+		d := act.Duration()
 
 		durs[act.Title] += d
 		dur += d
@@ -65,7 +65,7 @@ func sumSpans(spans []types.Span) time.Duration {
 	var dur time.Duration
 
 	for _, span := range spans {
-		dur += span.End.Sub(span.Start)
+		dur += span.Duration()
 	}
 
 	return dur.Round(time.Second)
