@@ -51,7 +51,7 @@ func Timesheet(week types.Week, t time.Time) error {
 		dayActs["Untracked"] = act{dur: dayTime - actDay}
 
 		fmt.Fprintf(w, "%s\t%s\n", date, fmtDuration(dayTime))
-		printActs(w, dayActs, "")
+		printActs(w, dayActs, nil, "")
 
 		weekTime += dayTime
 		fmt.Fprintln(w, "\t")
@@ -60,7 +60,7 @@ func Timesheet(week types.Week, t time.Time) error {
 	acts["Untracked"] = act{dur: weekTime - actWeek}
 
 	fmt.Fprintf(w, "Week\t%s\n", fmtDuration(weekTime))
-	printActs(w, acts, "")
+	printActs(w, acts, nil, "")
 	w.Flush()
 
 	return nil
@@ -77,12 +77,15 @@ func sumActs(acts map[string]act, title string, dur time.Duration) {
 			a.sub = make(map[string]act)
 		}
 		sumActs(a.sub, splits[1], dur)
+	} else {
+		a.taskDur += dur
+		a.isTask = true
 	}
 
 	acts[splits[0]] = a
 }
 
-func printActs(w io.Writer, acts map[string]act, padding string) {
+func printActs(w io.Writer, acts map[string]act, parent *act, padding string) {
 
 	var titles []string
 	for title, _ := range acts {
@@ -93,26 +96,71 @@ func printActs(w io.Writer, acts map[string]act, padding string) {
 	for i, title := range titles {
 		act := acts[title]
 
-		isLast := i == len(titles)-1
+		elementPadding, childPadding := getPadding(padding, i == len(titles)-1, act.isTask, parent != nil && parent.isTask)
 
-		myPadding := padding
-		childPadding := padding
+		fmt.Fprintf(w, "%s %s\t%s\n", elementPadding, title, fmtDuration(act.dur))
 
-		if isLast {
-			myPadding += "└─"
-			childPadding += "   "
-		} else {
-			myPadding += "├─"
-			childPadding += "│  "
+		if act.isTask && len(act.sub) > 0 {
+			fmt.Fprintf(w, "%s╟─ ...\t%s\n", childPadding, fmtDuration(act.taskDur))
 		}
 
-		fmt.Fprintf(w, "%s %s\t%s\n", myPadding, title, fmtDuration(act.dur))
-
-		printActs(w, act.sub, childPadding)
+		printActs(w, act.sub, &act, childPadding)
 	}
 }
 
+func getPadding(padding string, isLast bool, isTask bool, isSubTask bool) (string, string) {
+
+	elementPadding := padding
+	childPadding := padding
+
+	if isLast {
+		childPadding += "   "
+
+		if isSubTask {
+			if isTask {
+				elementPadding += "╚"
+			} else {
+				elementPadding += "╙"
+			}
+		} else {
+			if isTask {
+				elementPadding += "╘"
+			} else {
+				elementPadding += "└"
+			}
+		}
+	} else {
+		if isSubTask {
+			childPadding += "║  "
+
+			if isTask {
+				elementPadding += "╠"
+			} else {
+				elementPadding += "╟"
+			}
+		} else {
+			childPadding += "│  "
+
+			if isTask {
+				elementPadding += "╞"
+			} else {
+				elementPadding += "├"
+			}
+		}
+	}
+
+	if isTask {
+		elementPadding += "═"
+	} else {
+		elementPadding += "─"
+	}
+
+	return elementPadding, childPadding
+}
+
 type act struct {
-	dur time.Duration
-	sub map[string]act
+	dur     time.Duration
+	isTask  bool
+	taskDur time.Duration
+	sub     map[string]act
 }
