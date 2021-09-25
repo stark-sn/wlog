@@ -4,8 +4,9 @@ package working
 import (
 	"errors"
 	"fmt"
-	"s-stark.net/code/wlog/types"
 	"time"
+
+	"s-stark.net/code/wlog/types"
 )
 
 // Start break.

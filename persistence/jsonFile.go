@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
 	"s-stark.net/code/wlog/types"
 )
 
