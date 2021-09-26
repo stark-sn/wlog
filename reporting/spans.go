@@ -4,8 +4,9 @@ package reporting
 import (
 	"fmt"
 	"io"
-	"s-stark.net/code/wlog/types"
 	"time"
+
+	"s-stark.net/code/wlog/types"
 )
 
 func reportSpans(w io.Writer, day types.Day, t time.Time) {

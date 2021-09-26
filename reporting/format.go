@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var loc, _ = time.LoadLocation("Europe/Berlin")
+
 func fmtDuration(d time.Duration) string {
 
 	h := d / time.Hour
@@ -18,5 +20,5 @@ func fmtDuration(d time.Duration) string {
 }
 
 func fmtTime(t time.Time) string {
-	return t.Format("15:04:05")
+	return t.In(loc).Format("15:04:05")
 }

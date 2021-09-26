@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"s-stark.net/code/wlog/types"
 	"text/tabwriter"
 	"time"
+
+	"s-stark.net/code/wlog/types"
 )
 
 var writer = tabwriter.NewWriter(os.Stdout, 5, 0, 2, ' ', 0)

@@ -2,6 +2,7 @@
 package commands
 
 import (
+	"flag"
 	"log"
 	"os"
 	"time"
@@ -49,22 +50,39 @@ func Execute() {
 	var args []string
 	var command Cmd
 
+	var t time.Time
+	var timeFlag string
+
+	flag.StringVar(&timeFlag, "time", "", "override current time")
+	flag.Parse()
+
 	binName := os.Args[0]
+	args = flag.Args()
 
-	time := time.Now()
+	if timeFlag == "" {
+		t = time.Now()
+	} else {
+		parsedTime, err := time.Parse(time.RFC3339, timeFlag)
 
-	app.Init(time)
+		if err != nil {
+			log.Fatalf("Failed to parse provided time: %v", err)
+		}
 
-	if len(os.Args) < 2 {
+		t = parsedTime
+	}
+
+	app.Init(t)
+
+	if len(args) == 0 {
 		if !gotDefault {
-			log.Fatalf("Usage: %s", binName)
+			log.Fatalf("Usage: %s <command>", binName)
 		}
 
 		command = defaultCommand
 		args = defaultArgs
 	} else {
-		cmdName := os.Args[1]
-		args = os.Args[2:]
+		cmdName := args[0]
+		args = args[1:]
 
 		c, exists := commands[cmdName]
 
