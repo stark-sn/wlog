@@ -5,21 +5,22 @@ import (
 	"log"
 	"os/user"
 	"path"
+	"time"
+
 	"s-stark.net/code/wlog/persistence"
 	"s-stark.net/code/wlog/reporting"
 	"s-stark.net/code/wlog/types"
 	"s-stark.net/code/wlog/working"
-	"time"
 )
 
 const dir = ".wlog"
 
-var now time.Time = time.Now()
+var now time.Time
 var weekFile string
 var week types.Week
-var err error
 
-func init() {
+func Init(time time.Time) {
+	now = time
 	readWeekFile()
 }
 

@@ -3,10 +3,12 @@ package main
 
 import (
 	"log"
+
 	"s-stark.net/code/wlog/commands"
 )
 
 func init() {
+	// disable logger prefix
 	log.SetFlags(0)
 }
 

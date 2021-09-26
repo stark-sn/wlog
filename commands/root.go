@@ -4,6 +4,9 @@ package commands
 import (
 	"log"
 	"os"
+	"time"
+
+	"s-stark.net/code/wlog/app"
 )
 
 // Command definition.
@@ -47,6 +50,10 @@ func Execute() {
 	var command Cmd
 
 	binName := os.Args[0]
+
+	time := time.Now()
+
+	app.Init(time)
 
 	if len(os.Args) < 2 {
 		if !gotDefault {
