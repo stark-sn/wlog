@@ -40,10 +40,6 @@ func EndCurrentBreak() {
 	save(working.EndCurrentBreak(week, now))
 }
 
-func Status() {
-	reporting.Status(week, now)
-}
-
 func Timesheet() {
 	reporting.Timesheet(week, now)
 }
@@ -66,6 +62,10 @@ func EndCurrentActivity() {
 
 func LogActivity(task string, duration time.Duration) {
 	save(working.LogActivity(week, task, now, duration))
+}
+
+func LogNonWorkingTime(title string, duration time.Duration) {
+	save(working.LogNonWorkingTime(week, now, title, duration))
 }
 
 // helper functions

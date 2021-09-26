@@ -4,10 +4,11 @@ package reporting
 import (
 	"fmt"
 	"io"
-	"s-stark.net/code/wlog/types"
 	"sort"
 	"strings"
 	"time"
+
+	"s-stark.net/code/wlog/types"
 )
 
 // Display a timesheet report
@@ -25,6 +26,7 @@ func Timesheet(week types.Week, t time.Time) error {
 
 	var weekTime time.Duration
 	var actWeek time.Duration
+	var nonWeek time.Duration
 	acts := make(map[string]act)
 
 	w := writer
@@ -33,8 +35,9 @@ func Timesheet(week types.Week, t time.Time) error {
 		day, _ := week.Days[date]
 		spanTime := sumWorkingTimeDay(day, t)
 		breakTime := sumBreakTime(day, t)
+		nonTime := sumNonWorkingTime(day)
 
-		dayTime := spanTime - breakTime
+		dayTime := spanTime + nonTime - breakTime
 		var actDay time.Duration
 
 		dayActs := make(map[string]act)
@@ -46,7 +49,9 @@ func Timesheet(week types.Week, t time.Time) error {
 		}
 
 		actWeek += actDay
-		dayActs[untracked] = act{dur: dayTime - actDay}
+		nonWeek += nonTime
+		dayActs[untracked] = act{dur: dayTime - nonTime - actDay}
+		dayActs[nonWorking] = act{dur: nonTime}
 
 		fmt.Fprintf(w, "%s\t%s\n", date, fmtDuration(dayTime))
 		printActs(w, dayActs, nil, "")
@@ -55,7 +60,8 @@ func Timesheet(week types.Week, t time.Time) error {
 		fmt.Fprintln(w, "\t")
 	}
 
-	acts[untracked] = act{dur: weekTime - actWeek}
+	acts[untracked] = act{dur: weekTime - nonWeek - actWeek}
+	acts[nonWorking] = act{dur: nonWeek}
 
 	fmt.Fprintf(w, "Week\t%s\n", fmtDuration(weekTime))
 	printActs(w, acts, nil, "")

@@ -4,9 +4,10 @@ import "time"
 
 // A day dedicated to work.
 type Day struct {
-	Spans      []Span
-	Breaks     []Span
-	Activities []Activity
+	Spans          []Span
+	Breaks         []Span
+	Activities     []Activity
+	NonWorkingTime []NonWorkingTime
 
 	CurSpan     *Span
 	CurBreak    *Span

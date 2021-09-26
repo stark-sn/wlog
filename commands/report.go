@@ -8,14 +8,8 @@ import (
 )
 
 func init() {
-	AddDefaultCommand(statusCommand, []string{})
 	AddCommand(timesheetCommand)
-	AddCommand(reportCommand)
-}
-
-var statusCommand = Cmd{
-	Use: "status",
-	Run: statusCommandFunc,
+	AddDefaultCommand(reportCommand, []string{"day"})
 }
 
 var timesheetCommand = Cmd{
@@ -26,10 +20,6 @@ var timesheetCommand = Cmd{
 var reportCommand = Cmd{
 	Use: "report",
 	Run: reportCommandFunc,
-}
-
-func statusCommandFunc(args []string) {
-	app.Status()
 }
 
 func timesheetCommandFunc(args []string) {

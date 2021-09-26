@@ -14,17 +14,21 @@ import (
 var writer = tabwriter.NewWriter(os.Stdout, 5, 0, 2, ' ', 0)
 
 const untracked = "[Untracked]"
+const nonWorking = "[Non Working]"
 
 // Create work time report for one day.
 func reportDayOfWeek(w io.Writer, date string, day types.Day, now time.Time) time.Duration {
 	dur := sumWorkingTimeDay(day, now)
 	breakTime := sumBreakTime(day, now)
+	nonWorkingTime := sumNonWorkingTime(day)
 	activities, sumActs := sumActivitiesDay(day, now)
 
 	untrackedTime := dur - breakTime - sumActs
+	dur = dur + nonWorkingTime
 
 	fmt.Fprintf(w, "%s\t\t\n", date)
 	fmt.Fprintf(w, "\t\t\n")
+	fmt.Fprintf(w, "\t%s\t  %s\n", nonWorking, fmtDuration(nonWorkingTime))
 	reportSpans(w, day, now)
 	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
 	fmt.Fprintf(w, "\tBreak\t- %s\n", fmtDuration(breakTime))
@@ -35,6 +39,7 @@ func reportDayOfWeek(w io.Writer, date string, day types.Day, now time.Time) tim
 	reportActivities(w, activities)
 	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(sumActs))
 	fmt.Fprintf(w, "\t%s\t+ %s\n", untracked, fmtDuration(untrackedTime))
+	fmt.Fprintf(w, "\t%s\t+ %s\n", nonWorking, fmtDuration(nonWorkingTime))
 	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
 
 	return dur
@@ -46,7 +51,7 @@ func sumWorkingTimeDay(day types.Day, now time.Time) time.Duration {
 	return dur.Round(time.Second)
 }
 
-// Sum up break tiem of day.
+// Sum up break time of day.
 func sumBreakTime(day types.Day, now time.Time) time.Duration {
 	dur := sumSpans(day.GetBreaks(now))
 	return dur.Round(time.Second)
@@ -76,4 +81,15 @@ func sumSpans(spans []types.Span) time.Duration {
 	}
 
 	return dur.Round(time.Second)
+}
+
+// Sum non working time of day.
+func sumNonWorkingTime(day types.Day) time.Duration {
+	var dur time.Duration
+
+	for _, non := range day.NonWorkingTime {
+		dur += non.Duration
+	}
+
+	return dur
 }
