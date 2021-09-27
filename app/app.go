@@ -40,6 +40,10 @@ func EndCurrentBreak() {
 	save(working.EndCurrentBreak(week, now))
 }
 
+func Status() {
+	reporting.Status(week, now)
+}
+
 func Timesheet() {
 	reporting.Timesheet(week, now)
 }
