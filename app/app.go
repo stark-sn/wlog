@@ -56,6 +56,14 @@ func ReportWeek() {
 	reporting.ReportWeek(week, now)
 }
 
+func FindActivity(text string) {
+	titles := getAllActivityTitles(text)
+
+	for _, title := range titles {
+		fmt.Printf("%s ", title)
+	}
+}
+
 func StartActivity(task string) {
 	save(working.StartActivity(week, task, now))
 }
