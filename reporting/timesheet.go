@@ -35,7 +35,7 @@ func Timesheet(week types.Week, t time.Time) error {
 		day, _ := week.Days[date]
 		spanTime := sumWorkingTimeDay(day, t)
 		breakTime := sumBreakTime(day, t)
-		nonTime := sumNonWorkingTime(day)
+		dayNons, nonTime := sumNonWorkingTime(day)
 
 		dayTime := spanTime + nonTime - breakTime
 		var actDay time.Duration
@@ -51,7 +51,14 @@ func Timesheet(week types.Week, t time.Time) error {
 		actWeek += actDay
 		nonWeek += nonTime
 		dayActs[untracked] = act{dur: dayTime - nonTime - actDay}
-		dayActs[nonWorking] = act{dur: nonTime}
+
+		if len(dayNons) > 0 {
+			for non, dur := range dayNons {
+				nonTitle := fmt.Sprintf("%s:%s", nonWorking, non)
+				sumActs(acts, nonTitle, dur)
+				sumActs(dayActs, nonTitle, dur)
+			}
+		}
 
 		fmt.Fprintf(w, "%s\t%s\n", date, fmtDuration(dayTime))
 		printActs(w, dayActs, nil, "")
@@ -61,7 +68,6 @@ func Timesheet(week types.Week, t time.Time) error {
 	}
 
 	acts[untracked] = act{dur: weekTime - nonWeek - actWeek}
-	acts[nonWorking] = act{dur: nonWeek}
 
 	fmt.Fprintf(w, "Week\t%s\n", fmtDuration(weekTime))
 	printActs(w, acts, nil, "")
