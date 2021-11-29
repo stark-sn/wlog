@@ -35,10 +35,8 @@ func reportDayOfWeek(w io.Writer, date string, day types.Day, now time.Time) tim
 		fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(nonWorkingTime))
 	}
 
-	if len(day.Spans) > 0 {
-		reportSpans(w, day, now)
-		fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
-	}
+	reportSpans(w, day, now)
+	fmt.Fprintf(w, "\t\t= %s\n", fmtDuration(dur))
 
 	if breakTime > 0 {
 		fmt.Fprintf(w, "\tBreak\t- %s\n", fmtDuration(breakTime))
