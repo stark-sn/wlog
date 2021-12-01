@@ -36,7 +36,7 @@ func getAllActivityTitles(text string) []string {
 
 		for _, day := range week.Days {
 			for _, act := range day.GetActivities(now) {
-				if strings.Contains(strings.ToLower(act.Title), strings.ToLower(text)) {
+				if strings.HasPrefix(act.Title, text) {
 					activities[act.Title] = true
 				}
 			}
