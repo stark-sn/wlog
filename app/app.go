@@ -60,7 +60,7 @@ func FindActivity(text string) {
 	titles := getAllActivityTitles(text)
 
 	for _, title := range titles {
-		fmt.Printf("%s ", title)
+		fmt.Println(title)
 	}
 }
 
