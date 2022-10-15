@@ -52,8 +52,10 @@ func Execute() {
 
 	var t time.Time
 	var timeFlag string
+	var offsetFlag string
 
 	flag.StringVar(&timeFlag, "time", "", "override current time")
+	flag.StringVar(&offsetFlag, "offset", "", "offset to current or provided time")
 	flag.Parse()
 
 	binName := os.Args[0]
@@ -69,6 +71,15 @@ func Execute() {
 		}
 
 		t = parsedTime
+	}
+
+	if offsetFlag != "" {
+		offset, err := time.ParseDuration(offsetFlag)
+		if err != nil {
+			log.Fatalf("Failed to parse provided offset: %v", err)
+		}
+
+		t = t.Add(offset)
 	}
 
 	app.Init(t)
