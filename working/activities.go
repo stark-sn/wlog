@@ -11,22 +11,26 @@ import (
 // Start new activity.
 func StartActivity(week types.Week, activity string, t time.Time) (types.Week, error) {
 	if week.Days == nil {
-		return week, errors.New("You're not logged in this week yet.")
+		week.Days = make(map[string]types.Day)
 	}
 
 	date := types.Date(t)
 	day, _ := week.Days[date]
 
 	if day.IsOccupied() {
-		return week, fmt.Errorf("You're currently occupied with this activity '%v'.", day.CurActivity.Title)
+		if day.CurActivity.Title == activity {
+			return week, errors.New("You are already occupied with this activity.")
+		}
+
+		day = endActivity(day, t)
 	}
 
 	if day.IsOnBreak() {
-		return week, fmt.Errorf("You are currently on a break.")
+		day = endBreak(day, t)
 	}
 
 	if !day.IsIn() {
-		return week, errors.New("You're currently not in.")
+		day = startSpan(day, t)
 	}
 
 	act := types.Activity{Title: activity}

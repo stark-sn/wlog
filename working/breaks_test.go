@@ -9,16 +9,7 @@ import (
 
 func TestStartBreak(t *testing.T) {
 	week := types.Week{}
-
 	week, err := StartBreak(week, time.Time{})
-
-	if err == nil {
-		t.Error("Able to start break without comming in first")
-	}
-
-	week, _ = ComeIn(week, time.Time{})
-
-	week, err = StartBreak(week, time.Time{})
 
 	if err != nil {
 		t.Error("Unable to start break")
@@ -28,23 +19,6 @@ func TestStartBreak(t *testing.T) {
 
 	if err == nil {
 		t.Error("Abtle to start break twice")
-	}
-
-	week, _ = GoOut(week, time.Time{})
-
-	week, err = StartBreak(week, time.Time{})
-
-	if err == nil {
-		t.Error("Abtle to start break when out")
-	}
-
-	week, _ = ComeIn(week, time.Time{})
-	week, _ = StartActivity(week, "", time.Time{})
-
-	week, err = StartBreak(week, time.Time{})
-
-	if err == nil {
-		t.Error("Abtle to start break while occupied")
 	}
 }
 

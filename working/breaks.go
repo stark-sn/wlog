@@ -12,7 +12,7 @@ import (
 // Start break.
 func StartBreak(week types.Week, t time.Time) (types.Week, error) {
 	if week.Days == nil {
-		return week, errors.New("You're not logged in this week yet.")
+		week.Days = make(map[string]types.Day)
 	}
 
 	date := types.Date(t)
@@ -23,11 +23,11 @@ func StartBreak(week types.Week, t time.Time) (types.Week, error) {
 	}
 
 	if day.IsOccupied() {
-		return week, fmt.Errorf("You're currently occupied with %s.", day.CurActivity.Title)
+		day = endActivity(day, t)
 	}
 
 	if !day.IsIn() {
-		return week, errors.New("You're currently not in.")
+		day = startSpan(day, t)
 	}
 
 	b := types.Span{Start: t}
@@ -54,11 +54,7 @@ func EndCurrentBreak(week types.Week, t time.Time) (types.Week, error) {
 		return week, errors.New("You are not taking a break right now.")
 	}
 
-	b := day.CurBreak
-	b.End = t
-	day.CurBreak = nil
-
-	day.Breaks = append(day.Breaks, *b)
+	day = endBreak(day, t)
 
 	week.Days[date] = day
 

@@ -23,9 +23,7 @@ func ComeIn(week types.Week, t time.Time) (types.Week, error) {
 	}
 
 	// Start new work span
-	span := types.Span{}
-	span.Start = t
-	day.CurSpan = &span
+	day = startSpan(day, t)
 
 	week.Days[date] = day
 
@@ -56,19 +54,8 @@ func GoOut(week types.Week, t time.Time) (types.Week, error) {
 	day.Spans = append(day.Spans, *span)
 
 	// End current activity and break if applicable
-	if day.CurBreak != nil {
-		b := day.CurBreak
-		day.CurBreak = nil
-		b.End = t
-		day.Breaks = append(day.Breaks, *b)
-	}
-
-	if day.CurActivity != nil {
-		a := day.CurActivity
-		day.CurActivity = nil
-		a.End = t
-		day.Activities = append(day.Activities, *a)
-	}
+	day = endBreak(day, t)
+	day = endActivity(day, t)
 
 	week.Days[date] = day
 

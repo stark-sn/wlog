@@ -9,16 +9,7 @@ import (
 
 func TestStartActivity(t *testing.T) {
 	week := types.Week{}
-
 	week, err := StartActivity(week, "", time.Time{})
-
-	if err == nil {
-		t.Error("Able to start activity without comming in first")
-	}
-
-	week, _ = ComeIn(week, time.Time{})
-
-	week, err = StartActivity(week, "", time.Time{})
 
 	if err != nil {
 		t.Error("Unable to start activity")
@@ -27,24 +18,7 @@ func TestStartActivity(t *testing.T) {
 	week, err = StartActivity(week, "", time.Time{})
 
 	if err == nil {
-		t.Error("Abtle to start activity twice")
-	}
-
-	week, _ = GoOut(week, time.Time{})
-
-	week, err = StartActivity(week, "", time.Time{})
-
-	if err == nil {
-		t.Error("Abtle to start activity when out")
-	}
-
-	week, _ = ComeIn(week, time.Time{})
-	week, _ = StartBreak(week, time.Time{})
-
-	week, err = StartActivity(week, "", time.Time{})
-
-	if err == nil {
-		t.Error("Abtle to start activity while being on break")
+		t.Error("Abtle to start the same activity twice")
 	}
 }
 
